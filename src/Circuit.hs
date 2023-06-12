@@ -39,6 +39,10 @@ qM = map (\x -> if getGateType x == Mult then 1 else 0)
 qC :: [Gate] -> [Integer]
 qC = map (\x -> if getGateType x == Const then -c x else 0)
 
+interpolate :: [Integer] -> P.LagrangePoly Double
+interpolate xs = P.LagrangePoly $ P.lagrangeInterpAt $ zip [0,1..] (conv xs)
+    where conv = map (\x -> fromIntegral x :: Double)
+
 -- Witness assigments
 
 lefts :: [Gate] -> [String]

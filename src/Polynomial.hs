@@ -24,3 +24,5 @@ lagrangeInterpAt points x = sum $ zipWith (*) ys (map calcProd xs)
         xs = map fst points
         ys = map snd points
         calcProd xi = product $ map (\xj -> (x-xj)/(xi-xj)) (L.delete xi xs)
+
+newtype LagrangePoly a = LagrangePoly { runPoly :: (a -> a) }
