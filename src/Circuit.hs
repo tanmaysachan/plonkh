@@ -1,8 +1,10 @@
 module Circuit where
 
+import Util
 import qualified BabyJubJub as PrimeField (f)
-import qualified Data.Map.Strict as Map
+import qualified Data.Map.Strict as M
 import qualified Polynomial as P
+import qualified Data.List as L
 
 data InputType = Private | Public deriving (Show, Eq)
 data GateType = Add | Mult | Const deriving (Show, Eq)
@@ -20,40 +22,69 @@ data Gate = Gate {
   , c :: Integer
 }
 
--- Selector rules
+type Circuit = [Gate]
 
-qL :: [Gate] -> [Integer]
+-- Number of gates determined without circuit
+numGates :: Integer
+numGates = 3
+
+-- Typecasting purposes
+numGates' :: Int
+numGates' = fromIntegral numGates :: Int
+
+-- Selector rules
+qL :: Circuit -> [Integer]
 qL = map (\x -> if getGateType x == Add then 1
                 else if getGateType x == Const then 1
                 else 0)
 
-qR :: [Gate] -> [Integer]
+qR :: Circuit -> [Integer]
 qR = map (\x -> if getGateType x == Add then 1 else 0)
 
-qO :: [Gate] -> [Integer]
+qO :: Circuit -> [Integer]
 qO = map (\x -> if getGateType x /= Const then -1 else 0)
 
-qM :: [Gate] -> [Integer]
+qM :: Circuit -> [Integer]
 qM = map (\x -> if getGateType x == Mult then 1 else 0)
 
-qC :: [Gate] -> [Integer]
+qC :: Circuit -> [Integer]
 qC = map (\x -> if getGateType x == Const then -c x else 0)
 
-interpolate :: [Integer] -> P.LagrangePoly Double
-interpolate xs = P.LagrangePoly $ P.lagrangeInterpAt $ zip [0,1..] (conv xs)
-    where conv = map (\x -> fromIntegral x :: Double)
-
 -- Witness assigments
-
-lefts :: [Gate] -> [String]
+lefts :: Circuit -> [String]
 lefts = map (identifier . left)
 
-rights :: [Gate] -> [String]
+rights :: Circuit -> [String]
 rights = map (identifier . right)
 
-outs :: [Gate] -> [String]
+outs :: Circuit -> [String]
 outs = map (identifier. out)
 
-testingGates :: [Gate]
-testingGates = [Gate Add (Input Public "x") (Input Public "y") (Input Private "z") 0, Gate Mult (Input Private "y") (Input Public "x0") (Input Private "a") 0]
+-- Copy constraints implementation
+-- TODO: Domain needs to be powers of unity.
+
+-- numGates needs to be independent of the circuit
+cosetA :: [Integer]
+cosetA = [0..(numGates - 1)]
+
+cosetB :: [Integer]
+cosetB = [numGates..(2 * numGates - 1)]
+
+cosetC :: [Integer]
+cosetC = [(2 * numGates)..(3 * numGates - 1)]
+
+newDomains :: Circuit -> [Integer]
+newDomains c = map (snd) (permuteDomain witnessNames cosets)
+    where witnessNames = (lefts c) ++ (rights c) ++ (outs c)
+          cosets = cosetA ++ cosetB ++ cosetC
+
+sigmaA :: Circuit -> [Integer]
+sigmaA c = take numGates' (newDomains c)
+
+sigmaB :: Circuit -> [Integer]
+sigmaB c = take numGates' (drop numGates' (newDomains c))
+
+sigmaC :: Circuit -> [Integer]
+sigmaC c = take numGates' (drop (2 * numGates') (newDomains c))
+
 

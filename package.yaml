@@ -22,6 +22,9 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 - containers > 0.6
+- array > 0.5
+- aeson > 0.3.2.0
+- bytestring > 0.11
 
 ghc-options:
 - -Wall

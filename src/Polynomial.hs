@@ -26,3 +26,8 @@ lagrangeInterpAt points x = sum $ zipWith (*) ys (map calcProd xs)
         calcProd xi = product $ map (\xj -> (x-xj)/(xi-xj)) (L.delete xi xs)
 
 newtype LagrangePoly a = LagrangePoly { runPoly :: (a -> a) }
+
+-- Get a LagrangePoly from a set of xs and ys
+interpolate :: [Integer] -> [Integer] -> LagrangePoly Double
+interpolate xs ys = LagrangePoly $ lagrangeInterpAt $ zip (conv xs) (conv ys)
+    where conv = map (\x -> fromIntegral x :: Double)

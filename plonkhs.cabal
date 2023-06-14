@@ -28,13 +28,19 @@ library
       BabyJubJub
       Circuit
       Polynomial
+      Prover
+      TestCircuit
+      Util
   other-modules:
       Paths_plonkhs
   hs-source-dirs:
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.7 && <5
+      aeson >0.3.2.0
+    , array >0.5
+    , base >=4.7 && <5
+    , bytestring >0.11
     , containers >0.6
   default-language: Haskell2010
 
@@ -46,7 +52,10 @@ executable plonkhs-exe
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson >0.3.2.0
+    , array >0.5
+    , base >=4.7 && <5
+    , bytestring >0.11
     , containers >0.6
     , plonkhs
   default-language: Haskell2010
@@ -60,7 +69,10 @@ test-suite plonkhs-test
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
-      base >=4.7 && <5
+      aeson >0.3.2.0
+    , array >0.5
+    , base >=4.7 && <5
+    , bytestring >0.11
     , containers >0.6
     , plonkhs
   default-language: Haskell2010
